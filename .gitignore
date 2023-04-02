@@ -1,0 +1,10 @@
+.idea
+.vs/
+*.DotSettings.user
+*/obj
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
