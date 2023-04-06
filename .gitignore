@@ -1,7 +1,7 @@
 .idea
 .vs/
 *.DotSettings.user
-*/obj
+obj
 
 # Build results
 [Dd]ebug/

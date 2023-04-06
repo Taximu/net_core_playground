@@ -1,9 +1,14 @@
-﻿using store.BLL.Models;
+﻿using Store.Core.Models;
 
-namespace store.BLL.Services;
+namespace Store.Core.Services.CartingService;
 
 public interface ICartingService
 {
+    /// <summary>
+    /// Get all items in cart
+    /// </summary>
+    IEnumerable<Item>? GetAll();
+    
     /// <summary>
     /// Add item to cart
     /// </summary>

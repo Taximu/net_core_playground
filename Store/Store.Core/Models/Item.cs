@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace store.BLL.Models;
+namespace Store.Core.Models;
 
 public class Item
 {

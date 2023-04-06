@@ -1,6 +1,6 @@
-﻿using store.BLL.Models;
+﻿using Store.Core.Models;
 
-namespace store.BLL.Services;
+namespace Store.Core.Services.CartingService;
 
 public class CartingService : ICartingService
 {
@@ -9,7 +9,12 @@ public class CartingService : ICartingService
     {
         _cart = cart;
     }
-    
+
+    public IEnumerable<Item>? GetAll()
+    {
+        return _cart.Items;
+    }
+
     public void Add(Item item)
     {
         _cart.Items?.Add(item);

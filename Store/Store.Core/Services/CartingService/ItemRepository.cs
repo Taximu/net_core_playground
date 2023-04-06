@@ -1,8 +1,9 @@
 ﻿using LiteDB;
-using store.BLL.Models;
+using Store.Core.Models;
 
-namespace store.DAL;
-public class Repository : IRepository
+namespace Store.Core.Services.CartingService;
+
+public class ItemRepository : IItemRepository
 {
     private const string CollectionName = "items";
     private const string ConnectionString = "TestData.db";

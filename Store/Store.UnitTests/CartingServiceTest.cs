@@ -1,16 +1,15 @@
 ﻿using Moq;
 using NUnit.Framework;
-using store.BLL;
-using store.BLL.Models;
-using store.BLL.Services;
-using store.DAL;
+using Store.Core.Models;
+using Store.Core.Services;
+using Store.Core.Services.CartingService;
 
-namespace store.tests;
+namespace Store.UnitTests;
 
 [TestFixture]
 public class CartingServiceTest
 {
-    private Mock<IRepository>? _repository;
+    private readonly Mock<IItemRepository> _repository = new();
     private static readonly Item Item = new()
     {
         Id = 1,
@@ -24,7 +23,6 @@ public class CartingServiceTest
     [SetUp]
     public void Setup()
     {
-        _repository = new Mock<IRepository>();
         _repository.Setup(m => m.GetAll(It.IsAny<int>())).Returns(_items);
         _repository.Setup(m => m.Create(Item)).Callback(() => { _items.Add(Item); });
     }
