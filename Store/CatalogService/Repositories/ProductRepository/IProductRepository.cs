@@ -1,11 +1,11 @@
-﻿using Store.Core.Models;
+﻿using CatalogService.Models;
 
-namespace Store.Core.Services.ProductService;
+namespace CatalogService.Repositories.ProductRepository;
 
 public interface IProductRepository : IDisposable
 {
-    IEnumerable<Product?> GetProducts();
-    Product? GetProductById(int productId);
+    IEnumerable<Product>? GetProducts();
+    Product GetProductById(int productId);
     void InsertProduct(Product product);
     void DeleteProduct(int productId);
     void UpdateProduct(Product product);

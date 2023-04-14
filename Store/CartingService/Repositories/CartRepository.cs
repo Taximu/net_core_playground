@@ -1,12 +1,12 @@
 ﻿using LiteDB;
 using Store.Core.Models;
 
-namespace Store.Core.Services.CartingService;
+namespace Store.Core.Repositories;
 
-public class ItemRepository : IItemRepository
+public class CartRepository : ICartRepository
 {
-    private const string CollectionName = "items";
-    private const string ConnectionString = "TestData.db";
+    private const string CollectionName = "cartwithitems";
+    private const string ConnectionString = "Carting.db";
 
     public IEnumerable<Item> GetAll(int limit = 10)
     {

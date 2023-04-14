@@ -1,36 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Store.Core.Models;
+﻿using CatalogService.DbContext;
+using CatalogService.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Store.Core.Services.ProductService;
+namespace CatalogService.Repositories.ProductRepository;
 
 public class ProductRepository : IProductRepository, IDisposable
 {
-    private readonly StoreDbContext _context;
+    private readonly CatalogContext _context;
 
-    public ProductRepository(StoreDbContext context)
+    public ProductRepository(CatalogContext context)
     {
         _context = context;
     }
     
-    public IEnumerable<Product?> GetProducts()
+    public IEnumerable<Product>? GetProducts()
     {
-        return _context.Products.ToList();
+        return _context.Products?.ToList();
     }
 
-    public Product? GetProductById(int productId)
+    public Product GetProductById(int productId)
     {
-        return _context.Products.Find(productId);
+        return _context.Products?.Find(productId);
     }
 
     public void InsertProduct(Product product)
     {
-        _context.Products.Add(product);
+        _context.Products?.Add(product);
     }
 
     public void DeleteProduct(int productId)
     {
-        var product = _context.Products.Find(productId);
-        _context.Products.Remove(product);
+        var product = _context.Products?.Find(productId);
+        if (product != null) _context.Products?.Remove(product);
     }
 
     public void UpdateProduct(Product product)
@@ -43,7 +44,7 @@ public class ProductRepository : IProductRepository, IDisposable
         _context.SaveChanges();
     }
     
-    private bool _disposed = false;
+    private bool _disposed;
 
     protected virtual void Dispose(bool disposing)
     {

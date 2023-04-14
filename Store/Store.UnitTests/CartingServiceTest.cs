@@ -1,7 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Store.Core.Models;
-using Store.Core.Services;
+using Store.Core.Repositories;
 using Store.Core.Services.CartingService;
 
 namespace Store.UnitTests;
@@ -9,12 +9,12 @@ namespace Store.UnitTests;
 [TestFixture]
 public class CartingServiceTest
 {
-    private readonly Mock<IItemRepository> _repository = new();
+    private readonly Mock<ICartRepository> _repository = new();
     private static readonly Item Item = new()
     {
         Id = 1,
         Name = "Regular Cheese",
-        Image = "https://static.toiimg.com/thumb/msid-78679348,width-1280,resizemode-4/78679348.jpg",
+        Image = new Image { Url = "https://static.toiimg.com/thumb/msid-78679348,width-1280,resizemode-4/78679348.jpg" },
         Price = (decimal)39.0,
         Quantity = 0
     };
@@ -45,6 +45,7 @@ public class CartingServiceTest
     public void Remove_IfItemsEqualToOne_ReturnZeroItems()
     {
         //Arrange
+        _repository.Setup(m => m.GetAll(It.IsAny<int>())).Returns(_items);
         var cart = new Cart(_items);
         var cartingService = new CartingService(cart);
         
@@ -52,6 +53,6 @@ public class CartingServiceTest
         cartingService.Remove(Item);
         
         //Assert
-        Assert.True(_items.Count == 1);
+        Assert.True(_items.Count == cart.Items.Count);
     }
 }

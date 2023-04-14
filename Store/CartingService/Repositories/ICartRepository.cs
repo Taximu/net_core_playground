@@ -1,8 +1,8 @@
 ﻿using Store.Core.Models;
 
-namespace Store.Core.Services.CartingService;
+namespace Store.Core.Repositories;
 
-public interface IItemRepository
+public interface ICartRepository
 {
     IEnumerable<Item> GetAll(int limit = 10);
     void Create(Item item);

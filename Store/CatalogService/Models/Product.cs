@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Store.Core.Models;
+namespace CatalogService.Models;
 
 public class Product
 {
@@ -17,8 +16,7 @@ public class Product
     public string? Image { get; set; }
     
     [Required]
-    [NotMapped]
-    public Category Category { get; set; }
+    public Guid CategoryId { get; set; }
     
     [Required]
     public decimal Price { get; set; }

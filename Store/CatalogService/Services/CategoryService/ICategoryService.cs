@@ -1,6 +1,4 @@
-﻿using Store.Core.Models;
-
-namespace Store.Core.Services.CategoryService;
+﻿namespace CatalogService.Services.CategoryService;
 
 public interface ICategoryService
 {
@@ -8,24 +6,24 @@ public interface ICategoryService
     /// Get category by id
     /// </summary>
     /// <param name="categoryId"></param>
-    Category GetById(Guid categoryId);
+    Models.Category GetById(Guid categoryId);
 
     /// <summary>
     /// Get all categories
     /// </summary>
-    IEnumerable<Category> GetAll();
+    IEnumerable<Models.Category> GetAll();
 
     /// <summary>
     /// Add category
     /// </summary>
     /// <param name="category"></param>
-    void Add(Category category);
+    void Add(Models.Category category);
     
     /// <summary>
     /// Update category
     /// </summary>
     /// <param name="category">category</param>
-    bool Update(Category category);
+    bool Update(Models.Category category);
 
     /// <summary>
     /// Remove category

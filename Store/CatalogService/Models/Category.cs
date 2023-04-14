@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Store.Core.Models;
+namespace CatalogService.Models;
 
 public class Category
 {
@@ -13,5 +13,5 @@ public class Category
     
     public string? Image { get; set; }
     
-    public string? ParentCategory { get; set; }
+    public string? ParentCategoryId { get; set; }
 }

@@ -10,7 +10,7 @@ public class Item
     [Required]
     public string? Name { get; set; }
     
-    public string? Image { get; set; }
+    public Image? Image { get; set; }
     
     [Required]
     public decimal Price { get; set; }

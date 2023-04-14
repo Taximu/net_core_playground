@@ -1,25 +1,23 @@
-﻿using Store.Core.Models;
-
-namespace Store.Core.Services.CategoryService;
+﻿namespace CatalogService.Services.CategoryService;
 
 public class CategoryService : ICategoryService
 {
-    public Category GetById(Guid categoryId)
+    public Models.Category GetById(Guid categoryId)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Category> GetAll()
+    public IEnumerable<Models.Category> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public void Add(Category category)
+    public void Add(Models.Category category)
     {
         throw new NotImplementedException();
     }
 
-    public bool Update(Category category)
+    public bool Update(Models.Category category)
     {
         throw new NotImplementedException();
     }

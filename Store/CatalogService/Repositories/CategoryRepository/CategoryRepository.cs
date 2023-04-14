@@ -1,36 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Store.Core.Models;
+﻿using CatalogService.DbContext;
+using CatalogService.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Store.Core.Services.CategoryService;
+namespace CatalogService.Repositories.CategoryRepository;
 
 public class CategoryRepository : ICategoryRepository, IDisposable
 {
-    private readonly StoreDbContext _context;
+    private readonly CatalogContext _context;
 
-    public CategoryRepository(StoreDbContext context)
+    public CategoryRepository(CatalogContext context)
     {
         _context = context;
     }
     
-    public IEnumerable<Category?> GetCategories()
+    public IEnumerable<Category>? GetCategories()
     {
-        return _context.Categories.ToList();
+        return _context.Categories?.ToList();
     }
 
-    public Category? GetCategoryById(int categoryId)
+    public Category GetCategoryById(int categoryId)
     {
-        return _context.Categories.Find(categoryId);
+        return _context.Categories?.Find(categoryId);
     }
 
-    public void InsertCategory(Category category)
+    public void InsertCategory(Category? category)
     {
-        _context.Categories.Add(category);
+        _context.Categories?.Add(category);
     }
 
     public void DeleteCategory(int categoryId)
     {
-        var category = _context.Categories.Find(categoryId);
-        _context.Categories.Remove(category);
+        var category = _context.Categories?.Find(categoryId);
+        _context.Categories?.Remove(category);
     }
 
     public void UpdateCategory(Category category)

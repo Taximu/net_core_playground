@@ -1,6 +1,6 @@
-﻿using Store.Core.Models;
+﻿using CatalogService.Models;
 
-namespace Store.Core.Services.ProductService;
+namespace CatalogService.Services.ProductService;
 
 public interface IProductService
 {
