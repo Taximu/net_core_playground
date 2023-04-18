@@ -2,9 +2,9 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace Store.Web;
+namespace Store.Web.Infrastructure;
 
-public static class ServiceExtensions
+public static class DbServiceHelper
 {
     public static void InitializeDatabase(this IServiceCollection services, IConfiguration configuration)
     {

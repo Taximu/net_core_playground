@@ -5,8 +5,8 @@ namespace CatalogService.Models;
 public class Category
 {
     [Key]
-    public Guid Id { get; set; }
-
+    public string Id { get; set; }
+    
     [Required]
     [MaxLength(50, ErrorMessage = "maximum {1} characters allowed")]
     public string Name { get; set; }

@@ -4,10 +4,11 @@ namespace CatalogService.Repositories.ProductRepository;
 
 public interface IProductRepository : IDisposable
 {
-    IEnumerable<Product>? GetProducts();
-    Product GetProductById(int productId);
+    IEnumerable<Product>? GetProducts(string categoryId, int limit);
+    Product GetProductById(string productId);
     void InsertProduct(Product product);
-    void DeleteProduct(int productId);
+    void DeleteProduct(string productId);
+    void DeleteProductsByCategoryId(string categoryId);
     void UpdateProduct(Product product);
     void Save();
 }

@@ -2,12 +2,11 @@
 
 public class Cart
 {
-    public Guid Id { get; }
+    public string Id { get; }
 
-    public Cart(List<Item>? items)
+    public Cart()
     {
-        Items = items;
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid().ToString("N");
     }
     
     public List<Item>? Items { get; set; }

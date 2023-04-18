@@ -1,31 +1,33 @@
 ﻿using CatalogService.Models;
+using CatalogService.Repositories.ProductRepository;
 
 namespace CatalogService.Services.ProductService;
 
 public class ProductService : IProductService
 {
-    public Product GetById(Guid productId)
+    private readonly IProductRepository _productRepository;
+    public ProductService(IProductRepository productRepository)
     {
-        throw new NotImplementedException();
+        _productRepository = productRepository;
     }
-
-    public IEnumerable<Product> GetAll()
+    
+    public IEnumerable<Product>? GetAll(string categoryId, int limit)
     {
-        throw new NotImplementedException();
+        return _productRepository.GetProducts(categoryId, limit);
     }
 
     public void Add(Product product)
     {
-        throw new NotImplementedException();
+        _productRepository.InsertProduct(product);
     }
 
-    public bool Update(Product product)
+    public void Update(Product product)
     {
-        throw new NotImplementedException();
+        _productRepository.UpdateProduct(product);
     }
 
-    public bool Delete(Guid productId)
+    public void Delete(string productId)
     {
-        throw new NotImplementedException();
+        _productRepository.DeleteProduct(productId);
     }
 }

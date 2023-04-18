@@ -18,41 +18,43 @@ public class CartingServiceTest
         Price = (decimal)39.0,
         Quantity = 0
     };
-    private readonly List<Item> _items = new() { Item };
+    private static readonly List<Item> Items = new() { Item };
+    private readonly Cart _cart = new() { Items = Items };
     
     [SetUp]
     public void Setup()
     {
-        _repository.Setup(m => m.GetAll(It.IsAny<int>())).Returns(_items);
-        _repository.Setup(m => m.Create(Item)).Callback(() => { _items.Add(Item); });
+        _repository.Setup(m => m.GetCartItems(It.IsAny<string>())).Returns(Items);
+        _repository.Setup(m => m.Add(_cart.Id, Item)).Callback(() => { Items.Add(Item); });
     }
     
     [Test]
     public void Add_ItemNotNull_CartItemsGreaterThanOne()
     {
         //Arrange
-        var cart = new Cart(_items);
-        var cartingService = new CartingService(cart);
+        var mockCartRepository = new Mock<ICartRepository>();
+        mockCartRepository.Setup(m => m.GetCartItems(It.IsAny<string>())).Returns(Items);
+        var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Add(Item);
+        cartingService.Add(_cart.Id, Item);
         
         //Assert
-        Assert.True(_items.Count == 2);
+        Assert.True(Items.Count == 2);
     }
     
     [Test]
     public void Remove_IfItemsEqualToOne_ReturnZeroItems()
     {
         //Arrange
-        _repository.Setup(m => m.GetAll(It.IsAny<int>())).Returns(_items);
-        var cart = new Cart(_items);
-        var cartingService = new CartingService(cart);
+        var mockCartRepository = new Mock<ICartRepository>();
+        mockCartRepository.Setup(m => m.GetCartItems(It.IsAny<string>())).Returns(Items);
+        var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Remove(Item);
+        cartingService.Remove(_cart.Id, Item.Id);
         
         //Assert
-        Assert.True(_items.Count == cart.Items.Count);
+        Assert.True(_cart.Items != null && Items.Count == _cart.Items.Count);
     }
 }

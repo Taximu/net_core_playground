@@ -7,17 +7,19 @@ public interface ICartingService
     /// <summary>
     /// Get all items in cart
     /// </summary>
-    IEnumerable<Item>? GetAll();
-    
+    List<Item>? GetAllItems(string cartId);
+
     /// <summary>
     /// Add item to cart
     /// </summary>
+    /// <param name="cartId">Id of cart</param>
     /// <param name="item">item</param>
-    void Add(Item item);
+    string Add(string cartId, Item item);
 
     /// <summary>
     /// Remove item from cart
     /// </summary>
-    /// <param name="item">item</param>
-    void Remove(Item item);
+    /// <param name="cartId">Id of cart</param>
+    /// <param name="itemId">Id of item</param>
+    int Remove(string cartId, int itemId);
 }

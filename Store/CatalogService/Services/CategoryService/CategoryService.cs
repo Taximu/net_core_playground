@@ -1,29 +1,37 @@
-﻿namespace CatalogService.Services.CategoryService;
+﻿using CatalogService.Models;
+using CatalogService.Repositories.CategoryRepository;
+using CatalogService.Repositories.ProductRepository;
+
+namespace CatalogService.Services.CategoryService;
 
 public class CategoryService : ICategoryService
 {
-    public Models.Category GetById(Guid categoryId)
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IProductRepository _productRepository;
+    public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository)
     {
-        throw new NotImplementedException();
+        _categoryRepository = categoryRepository;
+        _productRepository = productRepository;
+    }
+    
+    public IEnumerable<Category>? GetAll()
+    {
+        return _categoryRepository.GetCategories();
     }
 
-    public IEnumerable<Models.Category> GetAll()
+    public void Add(Category category)
     {
-        throw new NotImplementedException();
+        _categoryRepository.InsertCategory(category);
     }
 
-    public void Add(Models.Category category)
+    public void Update(Category category)
     {
-        throw new NotImplementedException();
+        _categoryRepository.UpdateCategory(category);
     }
 
-    public bool Update(Models.Category category)
+    public void Delete(string categoryId)
     {
-        throw new NotImplementedException();
-    }
-
-    public bool Delete(Guid categoryId)
-    {
-        throw new NotImplementedException();
+        _categoryRepository.DeleteCategory(categoryId);
+        _productRepository.DeleteProductsByCategoryId(categoryId);
     }
 }

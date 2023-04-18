@@ -32,31 +32,24 @@ public class RepositoryToDb
     [Test]
     public void Repository_UpdateItem_CorrectData()
     {
-        _cartRepository.Create(_item);
-
-        var items = new List<Item>();
-        items.AddRange(_cartRepository.GetAll());
-
-        var cart = new Cart(items);
-
+        var cart = new Cart { Items = new List<Item> { _item } };
         //Act
-        _item.Name = "Cordon Blue Cheese";
-        _cartRepository.Update(_item);
-        cart.Items = _cartRepository.GetAll().ToList();
+        _cartRepository.Add(cart.Id, cart.Items[0]);
+        var cartItems = _cartRepository.GetCartItems(cart.Id);
 
         //Assert
-        Assert.AreEqual(_item.Name, cart.Items[0].Name!);
-
+        Assert.IsNotNull(cartItems?.Single());
     }
 
     [Test]
     public void Repository_DeleteItem_CorrectData()
     {
         //Act
-        _cartRepository.Delete(_item.Id);
-        var cart = new Cart(_cartRepository.GetAll().ToList());
+        var cart = new Cart { Items = new List<Item> { _item } };
+        _cartRepository.Remove(cart.Id, _item.Id);
+        var itemsList =_cartRepository.GetCartItems(cart.Id)?.ToList();
 
         //Assert
-        Assert.AreEqual(0, cart.Items.Count);
+        Assert.AreEqual(0, itemsList?.Count);
     }
 }

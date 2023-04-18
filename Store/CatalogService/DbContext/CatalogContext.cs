@@ -18,11 +18,11 @@ public sealed class CatalogContext : Microsoft.EntityFrameworkCore.DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        var beveragesCategory = new Category { Id = Guid.NewGuid(), Name = "Beverages" };
+        var beveragesCategory = new Category { Id = Guid.NewGuid().ToString("N"), Name = "Beverages" };
         modelBuilder.Entity<Category>().HasData(beveragesCategory);
         modelBuilder.Entity<Product>().HasData(new Product
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString("N"),
             Name = "Coca-cola",
             Price = (decimal)2.0, 
             CategoryId = beveragesCategory.Id
@@ -30,7 +30,7 @@ public sealed class CatalogContext : Microsoft.EntityFrameworkCore.DbContext
 
         modelBuilder.Entity<Product>().HasData(new Product
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString("N"),
             Name = "Pepsi",
             Price = (decimal)1.5, 
             CategoryId = beveragesCategory.Id

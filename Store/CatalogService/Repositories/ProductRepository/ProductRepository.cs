@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Repositories.ProductRepository;
 
-public class ProductRepository : IProductRepository, IDisposable
+public sealed class ProductRepository : IProductRepository
 {
     private readonly CatalogContext _context;
 
@@ -13,12 +13,16 @@ public class ProductRepository : IProductRepository, IDisposable
         _context = context;
     }
     
-    public IEnumerable<Product>? GetProducts()
+    public IEnumerable<Product>? GetProducts(string categoryId, int limit)
     {
-        return _context.Products?.ToList();
+        return _context.Products?
+            .Where(b => b.CategoryId == categoryId)
+            .Skip(limit)
+            .Take(limit)
+            .ToList();
     }
 
-    public Product GetProductById(int productId)
+    public Product GetProductById(string productId)
     {
         return _context.Products?.Find(productId);
     }
@@ -26,17 +30,27 @@ public class ProductRepository : IProductRepository, IDisposable
     public void InsertProduct(Product product)
     {
         _context.Products?.Add(product);
+        Save();
     }
-
-    public void DeleteProduct(int productId)
-    {
-        var product = _context.Products?.Find(productId);
-        if (product != null) _context.Products?.Remove(product);
-    }
-
+    
     public void UpdateProduct(Product product)
     {
         _context.Entry(product).State = EntityState.Modified;
+        Save();
+    }
+
+    public void DeleteProduct(string productId)
+    {
+        var product = _context.Products?.Find(productId);
+        if (product != null) _context.Products?.Remove(product);
+        Save();
+    }
+
+    public void DeleteProductsByCategoryId(string categoryId)
+    {
+        if (_context.Products == null) return;
+        var itemsToDelete = _context.Products.Where(x => x.CategoryId == categoryId);
+        _context.RemoveRange(itemsToDelete);
     }
 
     public void Save()
@@ -46,7 +60,7 @@ public class ProductRepository : IProductRepository, IDisposable
     
     private bool _disposed;
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!_disposed)
         {

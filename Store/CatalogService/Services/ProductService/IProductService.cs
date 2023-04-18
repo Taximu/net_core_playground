@@ -5,16 +5,10 @@ namespace CatalogService.Services.ProductService;
 public interface IProductService
 {
     /// <summary>
-    /// Get Product by id
-    /// </summary>
-    /// <param name="productId">id of product</param>
-    Product GetById(Guid productId);
-
-    /// <summary>
     /// Get all products
     /// </summary>
-    IEnumerable<Product> GetAll();
-
+    IEnumerable<Product>? GetAll(string categoryId, int limit);
+    
     /// <summary>
     /// Add Product
     /// </summary>
@@ -25,11 +19,11 @@ public interface IProductService
     /// Update Product
     /// </summary>
     /// <param name="product">product</param>
-    bool Update(Product product);
+    void Update(Product product);
 
     /// <summary>
     /// Delete product
     /// </summary>
     /// <param name="productId">id of product</param>
-    bool Delete(Guid productId);
+    void Delete(string productId);
 }

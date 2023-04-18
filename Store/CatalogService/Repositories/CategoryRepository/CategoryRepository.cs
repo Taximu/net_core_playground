@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Repositories.CategoryRepository;
 
-public class CategoryRepository : ICategoryRepository, IDisposable
+public sealed class CategoryRepository : ICategoryRepository
 {
     private readonly CatalogContext _context;
 
@@ -18,35 +18,34 @@ public class CategoryRepository : ICategoryRepository, IDisposable
         return _context.Categories?.ToList();
     }
 
-    public Category GetCategoryById(int categoryId)
-    {
-        return _context.Categories?.Find(categoryId);
-    }
-
-    public void InsertCategory(Category? category)
+    public void InsertCategory(Category category)
     {
         _context.Categories?.Add(category);
+        Save();
     }
-
-    public void DeleteCategory(int categoryId)
-    {
-        var category = _context.Categories?.Find(categoryId);
-        _context.Categories?.Remove(category);
-    }
-
+    
     public void UpdateCategory(Category category)
     {
         _context.Entry(category).State = EntityState.Modified;
+        Save();
     }
 
+    public void DeleteCategory(string categoryId)
+    {
+        var category = _context.Categories?.Find(categoryId);
+        if (category != null) 
+            _context.Categories?.Remove(category);
+        Save();
+    }
+    
     public void Save()
     {
         _context.SaveChanges();
     }
     
-    private bool _disposed = false;
+    private bool _disposed;
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!_disposed)
         {

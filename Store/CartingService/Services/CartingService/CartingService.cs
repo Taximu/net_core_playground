@@ -1,27 +1,28 @@
 ﻿using Store.Core.Models;
+using Store.Core.Repositories;
 
 namespace Store.Core.Services.CartingService;
 
 public class CartingService : ICartingService
 {
-    private readonly Cart _cart;
-    public CartingService(Cart cart)
+    private readonly ICartRepository _cartRepository;
+    public CartingService(ICartRepository cartRepository)
     {
-        _cart = cart;
+        _cartRepository = cartRepository;
     }
 
-    public IEnumerable<Item>? GetAll()
+    public List<Item>? GetAllItems(string cartId)
     {
-        return _cart.Items;
+        return _cartRepository.GetCartItems(cartId);
     }
 
-    public void Add(Item item)
+    public string Add(string cartId, Item item)
     {
-        _cart.Items?.Add(item);
+        return _cartRepository.Add(cartId, item);
     }
     
-    public void Remove(Item item)
+    public int Remove(string cartId, int itemId)
     {
-        _cart.Items?.Remove(item);
+        return _cartRepository.Remove(cartId, itemId);
     }
 }

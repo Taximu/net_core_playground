@@ -4,9 +4,9 @@ namespace Store.Core.Repositories;
 
 public interface ICartRepository
 {
-    IEnumerable<Item> GetAll(int limit = 10);
-    void Create(Item item);
-    
-    void Update(Item item);
-    void Delete(int itemId);
+    List<Item>? GetCartItems(string cartId);
+
+    string Add(string cartId, Item item);
+
+    int Remove(string cartId, int itemId);
 }
