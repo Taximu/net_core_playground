@@ -13,21 +13,21 @@ public sealed class ProductRepository : IProductRepository
         _context = context;
     }
     
-    public IEnumerable<Product>? GetProducts(string categoryId, int limit)
+    public IEnumerable<Product>? GetProducts(string categoryId, byte skip, byte take)
     {
         return _context.Products?
             .Where(b => b.CategoryId == categoryId)
-            .Skip(limit)
-            .Take(limit)
+            .Skip(skip)
+            .Take(take)
             .ToList();
     }
 
-    public Product GetProductById(string productId)
+    public Product? GetProductById(string productId)
     {
         return _context.Products?.Find(productId);
     }
 
-    public void InsertProduct(Product product)
+    public void InsertProduct(Product? product)
     {
         _context.Products?.Add(product);
         Save();
@@ -49,7 +49,7 @@ public sealed class ProductRepository : IProductRepository
     public void DeleteProductsByCategoryId(string categoryId)
     {
         if (_context.Products == null) return;
-        var itemsToDelete = _context.Products.Where(x => x.CategoryId == categoryId);
+        var itemsToDelete = _context.Products.Where(x => x != null && x.CategoryId == categoryId);
         _context.RemoveRange(itemsToDelete);
     }
 

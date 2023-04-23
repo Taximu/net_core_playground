@@ -11,18 +11,28 @@ public class CartingService : ICartingService
         _cartRepository = cartRepository;
     }
 
-    public List<Item>? GetAllItems(string cartId)
+    public List<Cart> GetCarts()
+    {
+        return _cartRepository.GetCarts();
+    }
+
+    public Cart GetCart(string cartId)
+    {
+        return _cartRepository.GetCart(cartId);
+    }
+
+    public List<Item>? GetCartItems(string cartId)
     {
         return _cartRepository.GetCartItems(cartId);
     }
 
-    public string Add(string cartId, Item item)
+    public string AddItem(string cartId, Item item)
     {
-        return _cartRepository.Add(cartId, item);
+        return _cartRepository.AddItem(cartId, item);
     }
     
-    public int Remove(string cartId, int itemId)
+    public int RemoveItem(string cartId, int itemId)
     {
-        return _cartRepository.Remove(cartId, itemId);
+        return _cartRepository.RemoveItem(cartId, itemId);
     }
 }

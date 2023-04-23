@@ -3,9 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.OpenApi.Models;
+using Store.Core.DbContext;
 using Store.Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<LiteDbOptions>(
+    builder.Configuration.GetSection(LiteDbOptions.SectionName));
 
 builder.Services.AddServices(builder.Configuration);
 

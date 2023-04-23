@@ -25,7 +25,7 @@ public class CartingServiceTest
     public void Setup()
     {
         _repository.Setup(m => m.GetCartItems(It.IsAny<string>())).Returns(Items);
-        _repository.Setup(m => m.Add(_cart.Id, Item)).Callback(() => { Items.Add(Item); });
+        _repository.Setup(m => m.AddItem(_cart.Id, Item)).Callback(() => { Items.Add(Item); });
     }
     
     [Test]
@@ -37,7 +37,7 @@ public class CartingServiceTest
         var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Add(_cart.Id, Item);
+        cartingService.AddItem(_cart.Id, Item);
         
         //Assert
         Assert.True(Items.Count == 2);
@@ -52,7 +52,7 @@ public class CartingServiceTest
         var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Remove(_cart.Id, Item.Id);
+        cartingService.RemoveItem(_cart.Id, Item.Id);
         
         //Assert
         Assert.True(_cart.Items != null && Items.Count == _cart.Items.Count);

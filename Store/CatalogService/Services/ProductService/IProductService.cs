@@ -7,13 +7,14 @@ public interface IProductService
     /// <summary>
     /// Get all products
     /// </summary>
-    IEnumerable<Product>? GetAll(string categoryId, int limit);
-    
+    IEnumerable<Product>? GetAll(string categoryId, byte skip, byte take);
+
     /// <summary>
     /// Add Product
     /// </summary>
     /// <param name="product"></param>
-    void Add(Product product);
+    /// <param name="categoryId"></param>
+    void Add(Product? product, string categoryId);
     
     /// <summary>
     /// Update Product

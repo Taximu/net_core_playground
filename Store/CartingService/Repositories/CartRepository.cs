@@ -1,35 +1,51 @@
 ﻿using LiteDB;
+using Store.Core.DbContext;
 using Store.Core.Models;
 
 namespace Store.Core.Repositories;
 
 public class CartRepository : ICartRepository
 {
+    private readonly LiteDatabase _liteDb;
+    private readonly string _collectionName;
+
+    public CartRepository(ILiteDbContext liteDbContext)
+    {
+        _liteDb = liteDbContext.Database;
+        _collectionName = liteDbContext.CollectionName;
+    }
+
+    public List<Cart> GetCarts()
+    {
+        return _liteDb.GetCollection<Cart>(_collectionName).FindAll().ToList();
+    }
+
+    public Cart GetCart(string cartId)
+    {
+        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId);
+        return cart;
+    }
+
     public List<Item>? GetCartItems(string cartId)
     {
-        using var db = new LiteDatabase(ConnectionString);
-        var cart = db.GetCollection<Cart>(CollectionName).FindById(cartId);
+        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId);
         return cart.Items;
     }
 
-    public string Add(string cartId, Item item)
+    public string AddItem(string cartId, Item item)
     {
-        using var db = new LiteDatabase(ConnectionString);
-        var cart = db.GetCollection<Cart>(CollectionName).FindById(cartId) ?? new Cart();
+        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId) ?? new Cart();
         if (cart.Items == null)
             cart.Items = new List<Item> { item };
         else
             cart.Items.Add(item);
-        return db.GetCollection<Cart>(CollectionName).Insert(cart);
+        _liteDb.GetCollection<Cart>(_collectionName).Insert(cart);
+        return cart.Id;
     }
 
-    public int Remove(string cartId, int itemId)
+    public int RemoveItem(string cartId, int itemId)
     {
-        using var db = new LiteDatabase(ConnectionString);
-        var item = db.GetCollection<Item>(CollectionName).FindById(cartId);
+        var item = _liteDb.GetCollection<Item>(_collectionName).FindById(cartId);
         return 0;
     }
-    
-    private const string CollectionName = "cartwithitems";
-    private const string ConnectionString = "Carting.db";
 }

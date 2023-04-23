@@ -7,24 +7,24 @@ namespace Store.Web.Controllers.V2;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("2.0")]
-public class CartController
+public class CartsController
 {
     private readonly ICartingService _cartingService;
-    public CartController(ICartingService catalogService)
+    public CartsController(ICartingService catalogService)
     {
         _cartingService = catalogService;
     }
     
     /// <summary>
-    /// Get all cart items
+    /// Get cart items
     /// </summary>
-    /// <param name="cartId">Id of cart</param>
-    [HttpGet("{cartId}")]
+    /// <param name="cartId">Cart's id</param>
+    [HttpGet("{cartId}/items")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult GetAllCartItems(string cartId)
+    public ActionResult Get(string cartId)
     {
-        var items = _cartingService.GetAllItems(cartId);
+        var items = _cartingService.GetCartItems(cartId);
         if (items != null && !items.Any())
             return new NoContentResult();
         return new OkObjectResult(JsonSerializer.Serialize(items));

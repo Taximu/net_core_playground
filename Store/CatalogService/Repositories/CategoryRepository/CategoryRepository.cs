@@ -13,12 +13,17 @@ public sealed class CategoryRepository : ICategoryRepository
         _context = context;
     }
     
-    public IEnumerable<Category>? GetCategories()
+    public Category? Get(string categoryId)
+    {
+        return _context.Categories?.Find(categoryId);
+    }
+    
+    public IEnumerable<Category?>? GetCategories()
     {
         return _context.Categories?.ToList();
     }
 
-    public void InsertCategory(Category category)
+    public void InsertCategory(Category? category)
     {
         _context.Categories?.Add(category);
         Save();

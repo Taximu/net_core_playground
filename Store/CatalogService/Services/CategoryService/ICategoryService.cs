@@ -5,15 +5,20 @@ namespace CatalogService.Services.CategoryService;
 public interface ICategoryService
 {
     /// <summary>
+    /// Get category by id
+    /// </summary>
+    Category? Get(string categoryId);
+    
+    /// <summary>
     /// Get all categories
     /// </summary>
-    IEnumerable<Category>? GetAll();
+    IEnumerable<Category?>? GetCategories();
 
     /// <summary>
     /// Add category
     /// </summary>
     /// <param name="category"></param>
-    void Add(Category category);
+    void Add(Category? category);
     
     /// <summary>
     /// Update category

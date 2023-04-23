@@ -11,12 +11,12 @@ public class ProductService : IProductService
         _productRepository = productRepository;
     }
     
-    public IEnumerable<Product>? GetAll(string categoryId, int limit)
+    public IEnumerable<Product>? GetAll(string categoryId, byte skip, byte take)
     {
-        return _productRepository.GetProducts(categoryId, limit);
+        return _productRepository.GetProducts(categoryId, skip, take);
     }
 
-    public void Add(Product product)
+    public void Add(Product? product, string categoryId)
     {
         _productRepository.InsertProduct(product);
     }

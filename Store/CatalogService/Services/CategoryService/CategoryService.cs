@@ -13,13 +13,18 @@ public class CategoryService : ICategoryService
         _categoryRepository = categoryRepository;
         _productRepository = productRepository;
     }
-    
-    public IEnumerable<Category>? GetAll()
+
+    public Category? Get(string categoryId)
+    {
+        return _categoryRepository.Get(categoryId);
+    }
+
+    public IEnumerable<Category?>? GetCategories()
     {
         return _categoryRepository.GetCategories();
     }
 
-    public void Add(Category category)
+    public void Add(Category? category)
     {
         _categoryRepository.InsertCategory(category);
     }

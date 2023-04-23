@@ -1,0 +1,1 @@
+﻿Carting subscriber should listen to all changes from catalog

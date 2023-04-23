@@ -34,7 +34,7 @@ public class RepositoryToDb
     {
         var cart = new Cart { Items = new List<Item> { _item } };
         //Act
-        _cartRepository.Add(cart.Id, cart.Items[0]);
+        _cartRepository.AddItem(cart.Id, cart.Items[0]);
         var cartItems = _cartRepository.GetCartItems(cart.Id);
 
         //Assert
@@ -46,7 +46,7 @@ public class RepositoryToDb
     {
         //Act
         var cart = new Cart { Items = new List<Item> { _item } };
-        _cartRepository.Remove(cart.Id, _item.Id);
+        _cartRepository.RemoveItem(cart.Id, _item.Id);
         var itemsList =_cartRepository.GetCartItems(cart.Id)?.ToList();
 
         //Assert
