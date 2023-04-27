@@ -4,7 +4,13 @@ namespace Store.Web.Models;
 
 public class CartHypermedia
 {
-    public Cart cart { get; set; }
+    public CartHypermedia(Cart cart, List<Link> links)
+    {
+        Cart = cart;
+        Links = links;
+    }
 
-    public List<Link> link { get; set; }
+    public Cart Cart { get; set; }
+
+    public List<Link> Links { get; set; }
 }

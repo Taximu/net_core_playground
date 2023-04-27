@@ -1,4 +1,5 @@
-﻿using CatalogService.DbContext;
+﻿using System.Diagnostics;
+using CatalogService.DbContext;
 using CatalogService.Repositories.CategoryRepository;
 using CatalogService.Repositories.ProductRepository;
 using CatalogService.Services.CategoryService;
@@ -10,10 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using Store.Core.DbContext;
 using Store.Core.Repositories;
 using Store.Core.Services.CartingService;
+using Store.Web.Infrastructure;
 using Store.Web.Infrastructure.GlobalErrorHandler;
-using Store.Web.Services;
+using Store.Web.Services.HypermediaServices;
 
-namespace Store.Web.Infrastructure;
+namespace Store.Web.Services;
 
 public static class ServicesModule
 {
@@ -23,6 +25,7 @@ public static class ServicesModule
         services.AddScoped<IUrlHelper>(x => {
             var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
             var factory = x.GetRequiredService<IUrlHelperFactory>();
+            Debug.Assert(actionContext != null, nameof(actionContext) + " != null");
             return factory.GetUrlHelper(actionContext);
         });
         
@@ -40,7 +43,7 @@ public static class ServicesModule
         services.AddRouting(options => options.LowercaseUrls = true);
     }
     
-    public static void ConfigureExceptionMiddleware(this WebApplication app) 
+    public static void ConfigureExceptionMiddleware(this WebApplication app)
     { 
         app.UseMiddleware<ExceptionMiddleware>(); 
     }

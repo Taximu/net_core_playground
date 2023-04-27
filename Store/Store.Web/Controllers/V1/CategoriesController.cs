@@ -9,7 +9,7 @@ namespace Store.Web.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class CategoriesController
+public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
     private readonly IProductService _productService;
@@ -43,10 +43,10 @@ public class CategoriesController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public ActionResult Get(string categoryId)
     {
-        if (string.IsNullOrEmpty(categoryId))
+        if (string.IsNullOrWhiteSpace(categoryId))
             return new BadRequestResult();
         var category = _categoryService.Get(categoryId);
-        if (string.IsNullOrEmpty(category.Id))
+        if (string.IsNullOrEmpty(category?.Id))
             return new NotFoundResult();
         return new OkObjectResult(category);
     }
@@ -57,10 +57,15 @@ public class CategoriesController
     /// <param name="category">Category model</param>
     [HttpPost("category", Name = nameof(AddCategory))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode AddCategory(Category? category)
+    public IActionResult AddCategory(Category category)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         _categoryService.Add(category);
-        return HttpStatusCode.OK;
+        return new OkResult();
     }
 
     /// <summary>
@@ -69,10 +74,15 @@ public class CategoriesController
     /// <param name="category">Category model</param>
     [HttpPut("category", Name = nameof(UpdateCategory))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode UpdateCategory(Category category)
+    public IActionResult UpdateCategory(Category category)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         _categoryService.Update(category);
-        return HttpStatusCode.OK;
+        return new OkResult();
     }
 
     /// <summary>

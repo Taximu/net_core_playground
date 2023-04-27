@@ -10,8 +10,8 @@ public sealed class CatalogContext : Microsoft.EntityFrameworkCore.DbContext
         
     }
 
-    public DbSet<Product?>? Products { get; set; }
-    public DbSet<Category?>? Categories { get; set; }
+    public DbSet<Product>? Products { get; set; }
+    public DbSet<Category>? Categories { get; set; }
     
     //TODO: Change to migration script
     protected override void OnModelCreating(ModelBuilder modelBuilder)

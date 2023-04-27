@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.OpenApi.Models;
 using Store.Core.DbContext;
-using Store.Web.Infrastructure;
+using Store.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

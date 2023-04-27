@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.Web.Models;
 
-namespace Store.Web.Services;
+namespace Store.Web.Services.HypermediaServices;
 
 public class HateoasGenerator : IHateoasGenerator
 {
@@ -11,11 +11,11 @@ public class HateoasGenerator : IHateoasGenerator
         _urlHelper = urlHelper;
     }
     
-    public List<Link> CreateLinks(CartHypermedia cartHypermedia)
+    public List<Link> CreateLinks()
     {
         var listOfLinks = new List<Link>
         {
-            new Link(_urlHelper.Link(nameof(Controllers.V1.CartsController.GetCart), null),
+            new(_urlHelper.Link(nameof(Controllers.V1.CartsController.GetCart), null),
                 "self",
                 "GET")
         };

@@ -2,14 +2,14 @@
 using Store.Core.Models;
 using Store.Core.Services.CartingService;
 using Store.Web.Models;
-using Store.Web.Services;
+using Store.Web.Services.HypermediaServices;
 
 namespace Store.Web.Controllers.V1;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class CartsController
+public class CartsController : ControllerBase
 {
     private readonly ICartingService _cartingService;
     private readonly IHateoasGenerator _hateoasGenerator;
@@ -25,12 +25,12 @@ public class CartsController
     /// <param name="cartId">Cart's id</param>
     [HttpGet("{cartId}", Name = nameof(GetCart))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public OkObjectResult GetCart(string cartId)
+    public IActionResult GetCart(string cartId)
     {
+        if (string.IsNullOrWhiteSpace(cartId))
+            return new BadRequestResult();
         var cart = _cartingService.GetCart(cartId);
-        var cartHateOas = new CartHypermedia { cart = cart };
-        
-        cartHateOas.link = _hateoasGenerator.CreateLinks(cartHateOas);
+        var cartHateOas = new CartHypermedia(cart, _hateoasGenerator.CreateLinks());
         return new OkObjectResult(cartHateOas);
     }
 
@@ -41,8 +41,13 @@ public class CartsController
     /// <param name="item">Product model</param>
     [HttpPost("{cartId}/items", Name = nameof(PostItem))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult PostItem(string cartId, Item item)
+    public IActionResult PostItem(string cartId, Item item)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         var result = _cartingService.AddItem(cartId, item);
         if (string.IsNullOrEmpty(result))
             return new NoContentResult();
