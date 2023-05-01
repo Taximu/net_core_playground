@@ -1,1 +1,0 @@
-﻿Publisher post changes to bus, subscriber should be triggered on all changes in catalog.

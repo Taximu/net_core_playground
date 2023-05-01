@@ -1,12 +1,15 @@
-﻿namespace Store.Core.Models;
+﻿using LiteDB;
+
+namespace Store.Core.Models;
 
 public class Cart
 {
-    public string Id { get; }
+    [BsonId]
+    public ObjectId Id { get; set; }
 
     public Cart()
     {
-        Id = Guid.NewGuid().ToString("N");
+        Id = ObjectId.NewObjectId();
     }
     
     public List<Item>? Items { get; set; }

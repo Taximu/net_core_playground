@@ -1,33 +1,38 @@
-﻿using CatalogService.Models;
+﻿using CatalogHandler.Services.Publisher;
+using CatalogService.Models;
 using CatalogService.Repositories.ProductRepository;
+using Newtonsoft.Json;
 
 namespace CatalogService.Services.ProductService;
 
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
-    public ProductService(IProductRepository productRepository)
+    private readonly IPublisherWrapper _publisherWrapper;
+    public ProductService(IProductRepository productRepository, IPublisherWrapper publisherWrapper)
     {
         _productRepository = productRepository;
+        _publisherWrapper = publisherWrapper;
     }
     
-    public IEnumerable<Product>? GetAll(string categoryId, byte skip, byte take)
+    public async Task<List<Product>> GetAllAsync(string categoryId, byte skip, byte take)
     {
-        return _productRepository.GetProducts(categoryId, skip, take);
+        return await _productRepository.GetProductsAsync(categoryId, skip, take);
     }
 
-    public void Add(Product? product, string categoryId)
+    public async Task AddAsync(Product? product)
     {
-        _productRepository.InsertProduct(product);
+        await _productRepository.InsertProductAsync(product);
     }
 
-    public void Update(Product product)
+    public async Task UpdateAsync(Product product)
     {
-        _productRepository.UpdateProduct(product);
+        await _productRepository.UpdateProductAsync(product);
+        await _publisherWrapper.WriteMessage(JsonConvert.SerializeObject(product));
     }
 
-    public void Delete(string productId)
+    public async Task DeleteAsync(string productId)
     {
-        _productRepository.DeleteProduct(productId);
+        await _productRepository.DeleteProductAsync(productId);
     }
 }

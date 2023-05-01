@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using LiteDB.Async;
 using Store.Core.DbContext;
 using Store.Core.Models;
 
@@ -6,7 +7,7 @@ namespace Store.Core.Repositories;
 
 public class CartRepository : ICartRepository
 {
-    private readonly LiteDatabase _liteDb;
+    private readonly LiteDatabaseAsync _liteDb;
     private readonly string _collectionName;
 
     public CartRepository(ILiteDbContext liteDbContext)
@@ -15,37 +16,81 @@ public class CartRepository : ICartRepository
         _collectionName = liteDbContext.CollectionName;
     }
 
-    public List<Cart> GetCarts()
+    private async Task<IEnumerable<Cart>> GetCartsAsync()
     {
-        return _liteDb.GetCollection<Cart>(_collectionName).FindAll().ToList();
+        return await _liteDb.GetCollection<Cart>(_collectionName).FindAllAsync();
     }
 
-    public Cart GetCart(string cartId)
+    public async Task<Cart?> GetCartAsync(string cartId)
     {
-        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId);
-        return cart;
+        ObjectId? id;
+        try
+        {
+            id = new ObjectId(cartId);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+        return await _liteDb.GetCollection<Cart>(_collectionName).FindByIdAsync(id);
     }
 
-    public List<Item>? GetCartItems(string cartId)
+    public async Task<List<Item>?> GetCartItemsAsync(string cartId)
     {
-        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId);
-        return cart.Items;
+        var cart = await GetCartAsync(cartId);
+        return cart?.Items;
     }
 
-    public string AddItem(string cartId, Item item)
+    public async Task<string> AddItemAsync(string cartId, Item item)
     {
-        var cart = _liteDb.GetCollection<Cart>(_collectionName).FindById(cartId) ?? new Cart();
+        var cart = await GetCartAsync(cartId) ?? new Cart();
+
         if (cart.Items == null)
+        {
             cart.Items = new List<Item> { item };
+            await _liteDb.GetCollection<Cart>(_collectionName).InsertAsync(cart);
+        }
         else
+        {
             cart.Items.Add(item);
-        _liteDb.GetCollection<Cart>(_collectionName).Insert(cart);
-        return cart.Id;
+            await _liteDb.GetCollection<Cart>(_collectionName).UpsertAsync(cart);
+        }
+
+        return cart.Id.ToString();
     }
 
-    public int RemoveItem(string cartId, int itemId)
+    public async Task<int> UpdateItemAsync(Item item)
     {
-        var item = _liteDb.GetCollection<Item>(_collectionName).FindById(cartId);
-        return 0;
+        var cartsCollection = await GetCartsAsync();
+        var carts = cartsCollection.ToList();
+
+        foreach (var cart in carts)
+        {
+            if (cart.Items == null) continue;
+            foreach (var it in cart.Items.Where(it => it.ExternalId == item.ExternalId))
+            {
+                it.Name = item.Name;
+                it.Image = item.Image;
+                it.Price = item.Price;
+                it.Quantity = item.Quantity;
+            }
+        }
+
+        return await _liteDb.GetCollection<Cart>(_collectionName).UpsertAsync(carts);
+    }
+
+    public async Task<Cart?> RemoveItemAsync(string cartId, int itemId)
+    {
+        var cart = await GetCartAsync(cartId);
+        if (cart?.Items == null) 
+            return cart;
+        
+        var newList = new List<Item>();
+        newList.AddRange(cart.Items.Where(item => item.Id != itemId));
+        
+        cart.Items = newList;
+        await _liteDb.GetCollection<Cart>().UpsertAsync(cart);
+
+        return cart;
     }
 }

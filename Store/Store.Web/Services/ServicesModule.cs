@@ -1,9 +1,13 @@
 ﻿using System.Diagnostics;
+using CatalogHandler.Services;
+using CatalogHandler.Services.Publisher;
+using CatalogHandler.Services.Subscriber;
 using CatalogService.DbContext;
 using CatalogService.Repositories.CategoryRepository;
 using CatalogService.Repositories.ProductRepository;
 using CatalogService.Services.CategoryService;
 using CatalogService.Services.ProductService;
+using Confluent.Kafka;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -29,6 +33,15 @@ public static class ServicesModule
             return factory.GetUrlHelper(actionContext);
         });
         
+        var producerConfig = new ProducerConfig();
+        var consumerConfig = new ConsumerConfig();
+        configuration.Bind("producer", producerConfig);
+        configuration.Bind("consumer", consumerConfig);
+        services.AddSingleton(producerConfig);
+        services.AddSingleton(consumerConfig);
+        services.AddSingleton<IPublisherWrapper, PublisherWrapper>();
+        services.AddSingleton<ISubscriberWrapper, SubscriberWrapper>();
+        
         services.AddScoped<IHateoasGenerator, HateoasGenerator>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddDbContext<CatalogContext>(options =>
@@ -39,12 +52,12 @@ public static class ServicesModule
         services.InitializeDatabase(configuration);
         services.AddSingleton<ILiteDbContext, CartingContext>();
         services.AddScoped<ICartRepository, CartRepository>();
-        services.AddScoped<ICartingService, CartingService>();
-        services.AddRouting(options => options.LowercaseUrls = true);
+        services.AddScoped<ICartingService, CartingService>(); 
+        services.AddSingleton<IHostedService, ProcessProductsService>();
     }
     
     public static void ConfigureExceptionMiddleware(this WebApplication app)
     { 
-        app.UseMiddleware<ExceptionMiddleware>(); 
+        app.UseMiddleware<ExceptionMiddleware>();
     }
 }

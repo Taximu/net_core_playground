@@ -13,39 +13,39 @@ public sealed class CategoryRepository : ICategoryRepository
         _context = context;
     }
     
-    public Category? Get(string categoryId)
+    public async Task<Category?> GetAsync(string categoryId)
     {
-        return _context.Categories?.Find(categoryId);
+        return await _context.Categories.FindAsync(categoryId);
     }
     
-    public IEnumerable<Category?>? GetCategories()
+    public async Task<IEnumerable<Category?>> GetCategoriesAsync()
     {
-        return _context.Categories?.ToList();
+        return await _context.Categories.ToListAsync();
     }
 
-    public void InsertCategory(Category? category)
+    public async Task InsertCategoryAsync(Category? category)
     {
-        _context.Categories?.Add(category);
-        Save();
+        _context.Categories.Add(category);
+        await SaveAsync();
     }
     
-    public void UpdateCategory(Category category)
+    public async Task UpdateCategoryAsync(Category category)
     {
-        _context.Entry(category).State = EntityState.Modified;
-        Save();
+        _context.Categories.Update(category);
+        await SaveAsync();
     }
 
-    public void DeleteCategory(string categoryId)
+    public async Task DeleteCategoryAsync(string categoryId)
     {
-        var category = _context.Categories?.Find(categoryId);
+        var category = await _context.Categories.FindAsync(categoryId);
         if (category != null) 
-            _context.Categories?.Remove(category);
-        Save();
+            _context.Categories.Remove(category);
+        await SaveAsync();
     }
-    
-    public void Save()
+
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
     
     private bool _disposed;

@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.IntegrationTests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService", "CatalogService\CatalogService.csproj", "{DA65D263-8306-481E-A9ED-85EEBE770884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogHandler", "CatalogHandler\CatalogHandler.csproj", "{2171AB2F-26E5-45CD-91E4-6DE23A3365C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBusHandler", "MessageBusHandler\MessageBusHandler.csproj", "{2171AB2F-26E5-45CD-91E4-6DE23A3365C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

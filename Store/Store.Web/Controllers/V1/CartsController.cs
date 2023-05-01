@@ -7,7 +7,7 @@ using Store.Web.Services.HypermediaServices;
 namespace Store.Web.Controllers.V1;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]/{cartId}")]
 [ApiVersion("1.0")]
 public class CartsController : ControllerBase
 {
@@ -23,13 +23,13 @@ public class CartsController : ControllerBase
     /// Get cart details 
     /// </summary>
     /// <param name="cartId">Cart's id</param>
-    [HttpGet("{cartId}", Name = nameof(GetCart))]
+    [HttpGet(Name = nameof(GetCart))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetCart(string cartId)
+    public async Task<ActionResult> GetCart(string cartId)
     {
         if (string.IsNullOrWhiteSpace(cartId))
             return new BadRequestResult();
-        var cart = _cartingService.GetCart(cartId);
+        var cart = await _cartingService.GetCartAsync(cartId);
         var cartHateOas = new CartHypermedia(cart, _hateoasGenerator.CreateLinks());
         return new OkObjectResult(cartHateOas);
     }
@@ -39,34 +39,25 @@ public class CartsController : ControllerBase
     /// </summary>
     /// <param name="cartId">Cart's id</param>
     /// <param name="item">Product model</param>
-    [HttpPost("{cartId}/items", Name = nameof(PostItem))]
+    [HttpPost("items", Name = nameof(PostItem))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult PostItem(string cartId, Item item)
+    public async Task<ActionResult> PostItem(string cartId, Item item)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        var result = _cartingService.AddItem(cartId, item);
-        if (string.IsNullOrEmpty(result))
-            return new NoContentResult();
-        return new OkObjectResult(result);
+        var result = await _cartingService.AddItemAsync(cartId, item);
+        return new OkObjectResult($"cartId: {result}");
     }
 
     /// <summary>
     /// Delete item from cart
     /// </summary>
     /// <param name="cartId">Cart's id</param>
-    /// <param name="itemId">Product's id</param>
-    [HttpDelete("{cartId}/items/{itemId:int}", Name = nameof(DeleteItem))]
+    /// <param name="itemId">Id of item</param>
+    [HttpDelete("items/{itemId:int}", Name = nameof(DeleteItem))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult DeleteItem(string cartId, int itemId)
+    public async Task<ActionResult> DeleteItem(string cartId, int itemId)
     {
-        var result = _cartingService.RemoveItem(cartId, itemId);
-        if (result > 0)
-            return new OkObjectResult(result);
-        return new EmptyResult();
+        var cart = await _cartingService.RemoveItemAsync(cartId, itemId);
+        return new OkObjectResult(cart);
     }
 }

@@ -11,28 +11,28 @@ public class CartingService : ICartingService
         _cartRepository = cartRepository;
     }
 
-    public List<Cart> GetCarts()
+    public async Task<Cart?> GetCartAsync(string cartId)
     {
-        return _cartRepository.GetCarts();
+        return await _cartRepository.GetCartAsync(cartId);
     }
 
-    public Cart GetCart(string cartId)
+    public async Task<List<Item>> GetCartItemsAsync(string cartId)
     {
-        return _cartRepository.GetCart(cartId);
+        return await _cartRepository.GetCartItemsAsync(cartId);
     }
 
-    public List<Item>? GetCartItems(string cartId)
+    public async Task<string> AddItemAsync(string cartId, Item item)
     {
-        return _cartRepository.GetCartItems(cartId);
+        return await _cartRepository.AddItemAsync(cartId, item);
     }
 
-    public string AddItem(string cartId, Item item)
+    public async Task<int> UpdateItemAsync(Item item)
     {
-        return _cartRepository.AddItem(cartId, item);
+        return await _cartRepository.UpdateItemAsync(item);
     }
     
-    public int RemoveItem(string cartId, int itemId)
+    public async Task<Cart?> RemoveItemAsync(string cartId, int itemId)
     {
-        return _cartRepository.RemoveItem(cartId, itemId);
+        return await _cartRepository.RemoveItemAsync(cartId, itemId);
     }
 }

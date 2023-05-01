@@ -1,5 +1,4 @@
-﻿using System.Net;
-using CatalogService.Models;
+﻿using CatalogService.Models;
 using CatalogService.Services.CategoryService;
 using CatalogService.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +24,10 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult GetAll()
+    public async Task<ActionResult> GetAll()
     {
-        var result = _categoryService.GetCategories();
-        if (result != null && !result.Any())
+        var result = await _categoryService.GetCategoriesAsync();
+        if (!result.Any())
             return new NoContentResult();
         return new OkObjectResult(result);
     }
@@ -41,12 +40,12 @@ public class CategoriesController : ControllerBase
     [HttpGet("{categoryId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult Get(string categoryId)
+    public async Task<ActionResult> Get(string categoryId)
     {
         if (string.IsNullOrWhiteSpace(categoryId))
             return new BadRequestResult();
-        var category = _categoryService.Get(categoryId);
-        if (string.IsNullOrEmpty(category?.Id))
+        var category = await _categoryService.GetAsync(categoryId);
+        if (category == null || string.IsNullOrEmpty(category.Id))
             return new NotFoundResult();
         return new OkObjectResult(category);
     }
@@ -57,14 +56,9 @@ public class CategoriesController : ControllerBase
     /// <param name="category">Category model</param>
     [HttpPost("category", Name = nameof(AddCategory))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult AddCategory(Category category)
+    public async Task<IActionResult> AddCategory(Category? category)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        _categoryService.Add(category);
+        await _categoryService.AddAsync(category);
         return new OkResult();
     }
 
@@ -74,14 +68,9 @@ public class CategoriesController : ControllerBase
     /// <param name="category">Category model</param>
     [HttpPut("category", Name = nameof(UpdateCategory))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult UpdateCategory(Category category)
+    public async Task<ActionResult> UpdateCategory(Category category)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        _categoryService.Update(category);
+        await _categoryService.UpdateAsync(category);
         return new OkResult();
     }
 
@@ -91,10 +80,10 @@ public class CategoriesController : ControllerBase
     /// <param name="categoryId">Category's id</param>
     [HttpDelete("{categoryId}", Name = nameof(DeleteCategory))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode DeleteCategory(string categoryId)
+    public async Task<ActionResult> DeleteCategory(string categoryId)
     {
-        _categoryService.Delete(categoryId);
-        return HttpStatusCode.OK;
+        await _categoryService.DeleteAsync(categoryId);
+        return new OkResult();
     }
 
     /// <summary>
@@ -107,10 +96,10 @@ public class CategoriesController : ControllerBase
     [HttpGet("{categoryId}/products", Name = nameof(Get))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult GetProducts(string categoryId, byte skip, byte take)
+    public async Task<ActionResult> GetProducts(string categoryId, byte skip = 0, byte take = 10)
     {
-        var result = _productService.GetAll(categoryId, skip, take);
-        if (result != null && !result.Any())
+        var result = await _productService.GetAllAsync(categoryId, skip, take);
+        if (!result.Any())
             return new NoContentResult();
         return new OkObjectResult(result);
     }
@@ -119,13 +108,12 @@ public class CategoriesController : ControllerBase
     /// Create product
     /// </summary>
     /// <param name="product">product model</param>
-    /// <param name="categoryId">Category's id</param>
-    [HttpPost("{categoryId}/products", Name = nameof(CreateProduct))]
+    [HttpPost("products", Name = nameof(CreateProduct))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode CreateProduct(Product? product, string categoryId)
+    public async Task<IActionResult> CreateProduct(Product product)
     {
-        _productService.Add(product, categoryId);
-        return HttpStatusCode.OK;
+        await _productService.AddAsync(product);
+        return new OkObjectResult(true);
     }
     
     /// <summary>
@@ -135,10 +123,10 @@ public class CategoriesController : ControllerBase
     /// <returns></returns>
     [HttpPut("products", Name = nameof(UpdateProduct))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode UpdateProduct(Product product)
+    public async Task<ActionResult> UpdateProduct(Product product)
     {
-        _productService.Update(product);
-        return HttpStatusCode.OK;
+        await _productService.UpdateAsync(product);
+        return new OkResult();
     }
 
     /// <summary>
@@ -148,9 +136,9 @@ public class CategoriesController : ControllerBase
     /// <returns></returns>
     [HttpDelete("products/{productId}", Name = nameof(DeleteProduct))]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public HttpStatusCode DeleteProduct(string productId)
+    public async Task<ActionResult> DeleteProduct(string productId)
     {
-        _productService.Delete(productId);
-        return HttpStatusCode.OK;
+        await _productService.DeleteAsync(productId);
+        return new OkResult();
     }
 }

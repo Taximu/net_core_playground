@@ -2,7 +2,7 @@
 
 public enum ProductStatus
 {
-    IN_PROGRESS,
-    COMPLETED,
-    REJECTED
+    InProgress,
+    Completed,
+    Rejected
 }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Store.Core.Services.CartingService;
 
 namespace Store.Web.Controllers.V2;
@@ -22,11 +21,11 @@ public class CartsController
     [HttpGet("{cartId}/items")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult Get(string cartId)
+    public async Task<ActionResult> Get(string cartId)
     {
-        var items = _cartingService.GetCartItems(cartId);
-        if (items != null && !items.Any())
+        var items = await _cartingService.GetCartItemsAsync(cartId);
+        if (!items.Any())
             return new NoContentResult();
-        return new OkObjectResult(JsonSerializer.Serialize(items));
+        return new OkObjectResult(items);
     }
 }

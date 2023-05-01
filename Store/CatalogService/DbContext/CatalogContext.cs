@@ -5,15 +5,12 @@ namespace CatalogService.DbContext;
 
 public sealed class CatalogContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    public CatalogContext(DbContextOptions<CatalogContext> options): base(options)
-    {
-        
-    }
+    public CatalogContext(DbContextOptions<CatalogContext> options): base(options) { }
 
-    public DbSet<Product>? Products { get; set; }
-    public DbSet<Category>? Categories { get; set; }
+    public DbSet<Product?> Products { get; set; }
+    public DbSet<Category?> Categories { get; set; }
     
-    //TODO: Change to migration script
+    //TODO Change to migration script
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

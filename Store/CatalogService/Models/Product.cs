@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LiteDB;
 
 namespace CatalogService.Models;
 
 public class Product
 {
-    [Key]
-    public string Id { get; set; }
+    [BsonId]
+    public string? Id { get; set; }
     
     [Required]
     [MaxLength(50, ErrorMessage = "maximum {1} characters allowed")]
@@ -16,7 +17,7 @@ public class Product
     public string? Image { get; set; }
     
     [Required]
-    public string CategoryId { get; set; }
+    public string? CategoryId { get; set; }
     
     [Required]
     public decimal Price { get; set; }

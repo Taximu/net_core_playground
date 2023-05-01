@@ -7,28 +7,28 @@ public interface ICategoryService
     /// <summary>
     /// Get category by id
     /// </summary>
-    Category? Get(string categoryId);
+    Task<Category?> GetAsync(string categoryId);
     
     /// <summary>
     /// Get all categories
     /// </summary>
-    IEnumerable<Category?>? GetCategories();
+    Task<IEnumerable<Category?>> GetCategoriesAsync();
 
     /// <summary>
     /// Add category
     /// </summary>
     /// <param name="category"></param>
-    void Add(Category? category);
+    Task AddAsync(Category? category);
     
     /// <summary>
     /// Update category
     /// </summary>
     /// <param name="category">category</param>
-    void Update(Category category);
+    Task UpdateAsync(Category category);
 
     /// <summary>
     /// Remove category
     /// </summary>
     /// <param name="categoryId">Id of category</param>
-    void Delete(string categoryId);
+    Task DeleteAsync(string categoryId);
 }

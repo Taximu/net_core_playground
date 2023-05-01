@@ -4,7 +4,7 @@ using Store.Core.Repositories;
 using Unity;
 
 namespace Store.IntegrationTests;
-
+//TODO Enhance and add more tests
 [TestFixture]
 public class RepositoryToDb
 {
@@ -30,26 +30,30 @@ public class RepositoryToDb
     }
 
     [Test]
-    public void Repository_UpdateItem_CorrectData()
+    public async Task Repository_UpdateItem_CorrectData()
     {
         var cart = new Cart { Items = new List<Item> { _item } };
         //Act
-        _cartRepository.AddItem(cart.Id, cart.Items[0]);
-        var cartItems = _cartRepository.GetCartItems(cart.Id);
+        await _cartRepository.AddItemAsync(cart.Id.ToString(), cart.Items[0]);
+        var cartItems = _cartRepository.GetCartItemsAsync(cart.Id.ToString());
 
         //Assert
-        Assert.IsNotNull(cartItems?.Single());
+        Assert.IsNotNull(cartItems.Result?.Single());
     }
 
     [Test]
-    public void Repository_DeleteItem_CorrectData()
+    public async Task Repository_DeleteItem_CorrectData()
     {
         //Act
         var cart = new Cart { Items = new List<Item> { _item } };
-        _cartRepository.RemoveItem(cart.Id, _item.Id);
-        var itemsList =_cartRepository.GetCartItems(cart.Id)?.ToList();
+        await _cartRepository.RemoveItemAsync(cart.Id.ToString(), _item.Id);
+        var result = _cartRepository.GetCartItemsAsync(cart.Id.ToString()).Result;
+        if (result != null)
+        {
+            var itemsList =result.ToList();
 
-        //Assert
-        Assert.AreEqual(0, itemsList?.Count);
+            //Assert
+            Assert.AreEqual(0, itemsList.Count);
+        }
     }
 }

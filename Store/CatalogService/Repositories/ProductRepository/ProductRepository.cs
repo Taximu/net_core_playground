@@ -13,49 +13,52 @@ public sealed class ProductRepository : IProductRepository
         _context = context;
     }
     
-    public IEnumerable<Product>? GetProducts(string categoryId, byte skip, byte take)
+    public async Task<List<Product>> GetProductsAsync(string categoryId, byte skip, byte take)
     {
-        return _context.Products?
-            .Where(b => b.CategoryId == categoryId)
+        return await _context.Products?
+            .Where(product => product.CategoryId == categoryId)
             .Skip(skip)
             .Take(take)
-            .ToList();
+            .ToListAsync();
     }
 
-    public Product? GetProductById(string productId)
+    public async Task<Product?> GetProductByIdAsync(string productId)
     {
-        return _context.Products?.Find(productId);
+        return await _context.Products.FindAsync(productId);
     }
 
-    public void InsertProduct(Product? product)
+    public async Task InsertProductAsync(Product? product)
     {
-        _context.Products?.Add(product);
-        Save();
+        await _context.Products.AddAsync(product);
+        await SaveAsync();
     }
     
-    public void UpdateProduct(Product product)
+    public async Task UpdateProductAsync(Product product)
     {
-        _context.Entry(product).State = EntityState.Modified;
-        Save();
+        _context.Products.Update(product);
+        await SaveAsync();
     }
 
-    public void DeleteProduct(string productId)
+    public async Task DeleteProductAsync(string productId)
     {
-        var product = _context.Products?.Find(productId);
-        if (product != null) _context.Products?.Remove(product);
-        Save();
+        var product = await _context.Products.FindAsync(productId);
+        if (product != null) _context.Products.Remove(product);
+        await SaveAsync();
     }
 
-    public void DeleteProductsByCategoryId(string categoryId)
+    public async Task DeleteProductsByCategoryIdAsync(string categoryId)
     {
-        if (_context.Products == null) return;
-        var itemsToDelete = _context.Products.Where(x => x != null && x.CategoryId == categoryId);
-        _context.RemoveRange(itemsToDelete);
+        var itemsToDelete = _context.Products.Where(x => x.CategoryId == categoryId);
+        if (itemsToDelete.Any())
+        {
+            _context.RemoveRange(itemsToDelete);
+            await SaveAsync();
+        }
     }
 
-    public void Save()
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
     
     private bool _disposed;
@@ -71,7 +74,7 @@ public sealed class ProductRepository : IProductRepository
         }
         _disposed = true;
     }
-
+    
     public void Dispose()
     {
         Dispose(true);

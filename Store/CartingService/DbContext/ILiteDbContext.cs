@@ -1,10 +1,10 @@
-﻿using LiteDB;
+﻿using LiteDB.Async;
 
 namespace Store.Core.DbContext;
 
 public interface ILiteDbContext
 {
-    LiteDatabase Database { get; }
+    LiteDatabaseAsync Database { get; }
     
     string CollectionName { get; }
 }

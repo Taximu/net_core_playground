@@ -14,29 +14,29 @@ public class CategoryService : ICategoryService
         _productRepository = productRepository;
     }
 
-    public Category? Get(string categoryId)
+    public async Task<Category?> GetAsync(string categoryId)
     {
-        return _categoryRepository.Get(categoryId);
+        return await _categoryRepository.GetAsync(categoryId);
     }
 
-    public IEnumerable<Category?>? GetCategories()
+    public async Task<IEnumerable<Category?>> GetCategoriesAsync()
     {
-        return _categoryRepository.GetCategories();
+        return await _categoryRepository.GetCategoriesAsync();
     }
 
-    public void Add(Category? category)
+    public async Task AddAsync(Category? category)
     {
-        _categoryRepository.InsertCategory(category);
+        await _categoryRepository.InsertCategoryAsync(category);
     }
 
-    public void Update(Category category)
+    public async Task UpdateAsync(Category category)
     {
-        _categoryRepository.UpdateCategory(category);
+        await _categoryRepository.UpdateCategoryAsync(category);
     }
 
-    public void Delete(string categoryId)
+    public async Task DeleteAsync(string categoryId)
     {
-        _categoryRepository.DeleteCategory(categoryId);
-        _productRepository.DeleteProductsByCategoryId(categoryId);
+        await _categoryRepository.DeleteCategoryAsync(categoryId);
+        await _productRepository.DeleteProductsByCategoryIdAsync(categoryId);
     }
 }

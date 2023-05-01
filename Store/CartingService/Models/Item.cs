@@ -7,6 +7,8 @@ public class Item
     [Required]
     public int Id { get; init; }
     
+    public string ExternalId { get; set; }
+    
     [Required]
     public string? Name { get; set; }
     

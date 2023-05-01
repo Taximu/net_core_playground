@@ -4,13 +4,13 @@ namespace Store.Core.Repositories;
 
 public interface ICartRepository
 {
-    List<Cart> GetCarts();
+    Task<Cart?> GetCartAsync(string cartId);
     
-    Cart GetCart(string cartId);
-    
-    List<Item>? GetCartItems(string cartId);
+    Task<List<Item>?> GetCartItemsAsync(string cartId);
 
-    string AddItem(string cartId, Item item);
+    Task<string> AddItemAsync(string cartId, Item item);
 
-    int RemoveItem(string cartId, int itemId);
+    Task<int> UpdateItemAsync(Item item);
+
+    Task<Cart?> RemoveItemAsync(string cartId, int itemId);
 }

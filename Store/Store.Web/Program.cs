@@ -1,4 +1,5 @@
 using System.Reflection;
+using CatalogHandler.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -11,15 +12,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<LiteDbOptions>(
     builder.Configuration.GetSection(LiteDbOptions.SectionName));
 
+builder.Services.Configure<TopicOptions>(
+    builder.Configuration.GetSection(TopicOptions.SectionName));
+
 builder.Services.AddServices(builder.Configuration);
 
-builder.Services.AddControllers(options =>
+builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddControllers(options => 
 {
     options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options=> {
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddSwaggerGen(options=> 
+{
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Store API - V1", Version = "v1" });
