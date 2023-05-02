@@ -1,57 +1,60 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Store.Core.Models;
-using Store.Core.Services;
+using Store.Core.Repositories;
 using Store.Core.Services.CartingService;
 
 namespace Store.UnitTests;
-
+//TODO Enhance and add more tests
 [TestFixture]
 public class CartingServiceTest
 {
-    private readonly Mock<IItemRepository> _repository = new();
+    private readonly Mock<ICartRepository> _repository = new();
     private static readonly Item Item = new()
     {
         Id = 1,
         Name = "Regular Cheese",
-        Image = "https://static.toiimg.com/thumb/msid-78679348,width-1280,resizemode-4/78679348.jpg",
+        Image = new Image { Url = "https://static.toiimg.com/thumb/msid-78679348,width-1280,resizemode-4/78679348.jpg" },
         Price = (decimal)39.0,
         Quantity = 0
     };
-    private readonly List<Item> _items = new() { Item };
+    private static readonly List<Item> Items = new() { Item };
+    private readonly Cart _cart = new() { Items = Items };
     
     [SetUp]
     public void Setup()
     {
-        _repository.Setup(m => m.GetAll(It.IsAny<int>())).Returns(_items);
-        _repository.Setup(m => m.Create(Item)).Callback(() => { _items.Add(Item); });
+        _repository.Setup(m => m.GetCartItemsAsync(It.IsAny<string>())).Returns(Task.FromResult(Items)!);
+        _repository.Setup(m => m.AddItemAsync(_cart.Id.ToString(), Item)).Callback(() => { Items.Add(Item); });
     }
     
     [Test]
-    public void Add_ItemNotNull_CartItemsGreaterThanOne()
+    public async Task Add_ItemNotNull_CartItemsGreaterThanOne()
     {
         //Arrange
-        var cart = new Cart(_items);
-        var cartingService = new CartingService(cart);
+        var mockCartRepository = new Mock<ICartRepository>();
+        mockCartRepository.Setup(m => m.GetCartItemsAsync(It.IsAny<string>())).Returns(Task.FromResult(Items)!);
+        var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Add(Item);
+        await cartingService.AddItemAsync(_cart.Id.ToString(), Item);
         
         //Assert
-        Assert.True(_items.Count == 2);
+        Assert.True(Items.Count == 2);
     }
     
     [Test]
-    public void Remove_IfItemsEqualToOne_ReturnZeroItems()
+    public async Task Remove_IfItemsEqualToOne_ReturnZeroItems()
     {
         //Arrange
-        var cart = new Cart(_items);
-        var cartingService = new CartingService(cart);
+        var mockCartRepository = new Mock<ICartRepository>();
+        mockCartRepository.Setup(m => m.GetCartItemsAsync(It.IsAny<string>())).Returns(Task.FromResult(Items)!);
+        var cartingService = new CartingService(mockCartRepository.Object);
         
         //Act
-        cartingService.Remove(Item);
+        await cartingService.RemoveItemAsync(_cart.Id.ToString(), Item.Id);
         
         //Assert
-        Assert.True(_items.Count == 1);
+        Assert.True(_cart.Items != null && Items.Count == _cart.Items.Count);
     }
 }

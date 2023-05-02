@@ -2,6 +2,7 @@
 .vs/
 *.DotSettings.user
 obj
+*.db
 
 # Build results
 [Dd]ebug/
