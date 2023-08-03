@@ -53,7 +53,7 @@ public static class ServicesModule
         services.AddSingleton<ILiteDbContext, CartingContext>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<ICartingService, CartingService>(); 
-        services.AddSingleton<IHostedService, ProcessProductsService>();
+        //services.AddSingleton<IHostedService, ProcessProductsService>();
     }
     
     public static void ConfigureExceptionMiddleware(this WebApplication app)
