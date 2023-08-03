@@ -21,6 +21,20 @@ public class HomeController : Controller
         }
         return new OkObjectResult(result);
     }
+    
+    [Authorize(Roles="Buyer")]
+    public async Task<IActionResult> Check()
+    {
+        var result = "Hello!";
+        using (var httpClient = new HttpClient())
+        {
+            using (var response = await httpClient.GetAsync("http://localhost:5019/api/v1/categories"))
+            {
+                result = await response.Content.ReadAsStringAsync();
+            }
+        }
+        return new OkObjectResult(result);
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
