@@ -34,3 +34,82 @@ Security best practices included:
 git clone https://github.com/Taximu/net_core_playground.git
 cd net_core_playground
 dotnet build
+```
+
+### Run API Server
+```bash
+cd src/Api
+dotnet run
+```
+➡️ The API will be hosted at `https://localhost:5001` by default.
+
+---
+
+## 🔧 Key Components
+
+```
+src/
+├── Api/              → ASP.NET Core API project  
+├── Application/      → Use-cases, command/query handlers  
+├── Domain/           → Entities, value objects, domain logic  
+└── Infrastructure/   → Implementations for DB, messaging, security, etc.
+```
+
+- **MessageBus**: In-memory/event-driven bus for commands & events  
+- **EF Core**: For data persistence (Sqlite/PostgreSQL support)  
+- **JWT/Auth**: Authentication and role/permission-based access  
+- **Middleware**: Global exception handling, logging, model validation
+
+---
+
+## 🧪 Sample Usage
+
+1. Register a new user via `POST /api/auth/register`
+2. Log in to receive a JWT: `POST /api/auth/login`
+3. Include `Authorization: Bearer <token>` in protected API calls
+4. Submit a command, e.g. `POST /api/command/do-something`
+5. Observe domain-handled workflow, event publication, persistence
+
+---
+
+## 🧩 Extending the Project
+
+- Add new **Commands** or **Events** in the Application layer
+- Implement new **Event Handlers** for side effects
+- Plug in alternative **MessageBus** implementations (e.g. RabbitMQ/Kafka adapters)
+- Switch databases (e.g., from Sqlite to PostgreSQL) in Infrastructure
+- Enhance **Security**:
+  - Add custom policies, claims transformation
+  - Integrate OAuth2 / external identity providers
+
+---
+
+## 📋 Running Tests
+
+Extensive unit and integration tests for all layers:
+```bash
+cd tests
+dotnet test
+```
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a branch: `feature/your-feature`
+3. Commit your changes  
+4. Push to GitHub & open a Pull Request  
+5. Ensure all tests pass and new code is well documented
+
+---
+
+## 📄 License
+
+**MIT License** — see [LICENSE](LICENSE) for full details.
+
+---
+
+## 📬 Questions?
+
+Feel free to open an issue or pull request. Happy coding! 🚀
