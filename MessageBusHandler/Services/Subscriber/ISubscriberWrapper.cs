@@ -1,8 +1,9 @@
-﻿using Confluent.Kafka;
-
-namespace CatalogHandler.Services.Subscriber;
+﻿namespace CatalogHandler.Services.Subscriber;
 
 public interface ISubscriberWrapper
 {
-    string ReadMessage();
+    /// <summary>
+    /// Reads messages. Returns null when the operation is canceled.
+    /// </summary>
+    string? ReadMessage(CancellationToken cancellationToken = default);
 }

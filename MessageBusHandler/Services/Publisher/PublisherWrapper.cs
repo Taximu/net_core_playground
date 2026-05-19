@@ -4,28 +4,42 @@ using Microsoft.Extensions.Options;
 
 namespace CatalogHandler.Services.Publisher;
 
-public class PublisherWrapper : IPublisherWrapper
+/// <summary>
+/// Wraps a Kafka producer
+/// </summary>
+public sealed class PublisherWrapper : IPublisherWrapper, IDisposable
 {
     private readonly string _topicName;
-    private readonly ProducerConfig _config;
+    private readonly IProducer<Null, string> _producer;
 
     public PublisherWrapper(ProducerConfig config, IOptions<TopicOptions> options)
     {
         _topicName = options.Value.TopicName;
-        _config = config;
+        _producer = new ProducerBuilder<Null, string>(config).Build();
     }
-    
+
     public async Task WriteMessage(string message)
     {
-        using var producer = new ProducerBuilder<Null, string>(_config).Build();
         try
         {
-            var dr = await producer.ProduceAsync(_topicName, new Message<Null, string> { Value = message });
-            Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
+            var deliveryResult = await _producer.ProduceAsync(_topicName, new Message<Null, string> { Value = message });
+            Console.WriteLine($"Delivered '{deliveryResult.Value}' to '{deliveryResult.TopicPartitionOffset}'");
         }
         catch (ProduceException<Null, string> e)
         {
             Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+        }
+    }
+
+    public void Dispose()
+    {
+        try
+        {
+            _producer.Flush(TimeSpan.FromSeconds(10));
+        }
+        finally
+        {
+            _producer.Dispose();
         }
     }
 }

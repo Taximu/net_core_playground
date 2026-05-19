@@ -4,37 +4,53 @@ using Microsoft.Extensions.Options;
 
 namespace CatalogHandler.Services.Subscriber;
 
-public class SubscriberWrapper : ISubscriberWrapper
+/// <summary>
+/// Wraps a Kafka consumer.
+/// </summary>
+public sealed class SubscriberWrapper : ISubscriberWrapper, IDisposable
 {
-    private readonly string _topicName;
-    private readonly ConsumerConfig _consumerConfig;    
+    private readonly IConsumer<Ignore, string> _consumer;
+
     public SubscriberWrapper(ConsumerConfig config, IOptions<TopicOptions> topicOptions)
     {
-        _topicName = topicOptions.Value.TopicName;
-        _consumerConfig = config;
+        var topicName = topicOptions.Value.TopicName;
+        _consumer = new ConsumerBuilder<Ignore, string>(config).Build();
+        _consumer.Subscribe(topicName);
     }
-    
-    public string ReadMessage()
+
+    public string? ReadMessage(CancellationToken cancellationToken = default)
     {
-        using var consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
-        consumer.Subscribe(_topicName); 
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                var consumeResult = _consumer.Consume(TimeSpan.FromMilliseconds(500));
+                if (consumeResult == null)
+                    continue;
+                if (consumeResult.IsPartitionEOF)
+                    continue;
+                if (consumeResult.Message?.Value != null)
+                    return consumeResult.Message.Value;
+            }
+            catch (ConsumeException ex)
+            {
+                Console.WriteLine($"Kafka consume error: {ex.Error.Reason}");
+                throw;
+            }
+        }
+
+        return null;
+    }
+
+    public void Dispose()
+    {
         try
         {
-            var received = false;
-            var message = "";
-            while (!received)
-            {
-                var consumeResult = consumer.Consume();
-                if (consumeResult?.Message == null) continue;
-                message = consumeResult.Message.Value;
-                received = true;
-            }
-            return message;
+            _consumer.Close();
         }
-        catch (Exception ex)
+        finally
         {
-            Console.WriteLine(ex.Message);
-            return "Terminated";
+            _consumer.Dispose();
         }
     }
 }
